@@ -17,16 +17,20 @@ A fullstack web application built with **React**, **Firebase Firestore**, **Fire
 
 ---
 
+## 🌍 Live Demo
+
+🔗 [https://interactive-dashboard-firebase.vercel.app](https://interactive-dashboard-firebase.vercel.app)
+
 ## 🧑‍💻 Getting Started
 
 ### ✅ Prerequisites
 
 - **Node.js** v18 or higher
 - **Firebase CLI** installed globally
-  ```bash
-  npm install -g firebase-tools
-  A Firebase project with Firestore, Authentication, and Functions enabled
-  ```
+
+```bash
+npm install -g firebase-tools
+```
 
 🔐 Firebase Setup
 Create a new project in the Firebase Console.
@@ -37,7 +41,15 @@ In both your frontend and backend, set the following configuration values:
 
 Frontend (.env):
 
+# For local development
+
 VITE_API_BASE_URL=http://127.0.0.1:5001/interactive-dashboard-firebase/europe-west1/trafficStats/api
+
+# For production (Vercel)
+
+Set VITE_API_BASE_URL in your Vercel dashboard to:
+https://europe-west1-fir-project-d9b5e.cloudfunctions.net/trafficStats/api
+
 Backend (Cloud Functions):
 Ensure that your functions/src/index.ts (or equivalent) correctly initializes with the same project ID and region.
 
@@ -61,7 +73,8 @@ npm run build
 Start the Firebase emulator (Functions only):
 firebase emulators:start --only functions
 
-🧠 Tech Stack
+## 🧠 Tech Stack
+
 Frontend:
 
 React
@@ -117,3 +130,7 @@ Ariel Zamir
 Email: arielzamir100@gmail.com
 
 GitHub: github.com/arielzamir
+
+```
+
+```

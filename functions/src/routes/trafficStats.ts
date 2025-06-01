@@ -1,6 +1,6 @@
-import { Router } from "express";
+import {Router} from "express";
 import cors from "cors";
-import { checkAuth, checkRole } from "../middlewares/authMiddleware";
+import {checkAuth, checkRole} from "../middlewares/authMiddleware";
 import {
   addStatController,
   deleteStatController,
@@ -8,9 +8,10 @@ import {
   updateStatController,
 } from "../controllers/trafficStatsController";
 
+// eslint-disable-next-line new-cap
 const router = Router();
 
-router.use(cors({ origin: true }));
+router.use(cors({origin: true}));
 router.use(checkAuth);
 
 router.get("/traffic", getAllStatsController);

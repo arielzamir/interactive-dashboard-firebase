@@ -4,7 +4,7 @@ import {
   getAllStatsDal,
   updateStatDal,
 } from "../dal/trafficStatsDal";
-import { TrafficStat } from "../interfaces/trafficStat.interface";
+import {TrafficStat} from "../interfaces/trafficStat.interface";
 
 export const getAllStatsService = async () => {
   return await getAllStatsDal();

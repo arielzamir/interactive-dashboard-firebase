@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from "express";
 import * as admin from "firebase-admin";
 
 export interface AuthenticatedRequest extends Request {
@@ -15,13 +15,13 @@ export const checkAuth = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.split("Bearer ")[1]
-    : null;
+  const token = authHeader.startsWith("Bearer ") ?
+    authHeader.split("Bearer ")[1] :
+    null;
 
   if (!token) {
     console.log("No token provided");
-    res.status(401).json({ message: "Unauthorized: No token provided" });
+    res.status(401).json({message: "Unauthorized: No token provided"});
     return;
   }
 
@@ -32,7 +32,7 @@ export const checkAuth = async (
     next();
   } catch (error) {
     console.error("Auth error:", error);
-    res.status(401).json({ message: "Unauthorized: Invalid token" });
+    res.status(401).json({message: "Unauthorized: Invalid token"});
   }
 };
 
@@ -44,7 +44,7 @@ export const checkRole = (role: "viewer" | "editor") => {
   ) => {
     const user = req.user;
     if (!user || !user.uid) {
-      return res.status(401).json({ message: "Unauthorized: No user found" });
+      return res.status(401).json({message: "Unauthorized: No user found"});
     }
 
     try {
@@ -57,27 +57,27 @@ export const checkRole = (role: "viewer" | "editor") => {
       if (!userDoc.exists) {
         return res
           .status(403)
-          .json({ message: "Forbidden: User record not found" });
+          .json({message: "Forbidden: User record not found"});
       }
 
       const userData = userDoc.data();
       const userRole = userData?.role;
 
       if (!userRole) {
-        return res.status(403).json({ message: "Forbidden: No role assigned" });
+        return res.status(403).json({message: "Forbidden: No role assigned"});
       }
 
       if (role === "editor" && userRole !== "editor") {
         return res
           .status(403)
-          .json({ message: "Forbidden: Editor role required" });
+          .json({message: "Forbidden: Editor role required"});
       }
 
       next();
       return;
     } catch (error) {
       console.error("checkRole error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({message: "Internal server error"});
     }
   };
 };
