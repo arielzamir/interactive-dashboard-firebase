@@ -1,0 +1,12 @@
+# compiled output
+dist
+
+# environment variables
+.env
+
+# system files
+.DS_Store
+*.log
+
+# dependencies
+node_modules
