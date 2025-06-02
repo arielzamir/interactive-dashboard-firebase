@@ -1,11 +1,4 @@
-import * as admin from "firebase-admin";
-import serviceAccount from "../config/serviceAccountKey.json";
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-});
-
-const db = admin.firestore();
+import { db } from "../backend/src/config/firebase";
 
 const trafficStats = [
   { date: "2025-03-01", visits: 120 },

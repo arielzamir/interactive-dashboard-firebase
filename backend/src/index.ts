@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
+import * as dotenv from "dotenv";
 import { trafficStatsApi } from "./routes/trafficStats";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 8080;
 

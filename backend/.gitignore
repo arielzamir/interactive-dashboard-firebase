@@ -10,3 +10,7 @@ dist
 
 # dependencies
 node_modules
+
+# serviceAccountKey
+config/serviceAccountKey.json
+

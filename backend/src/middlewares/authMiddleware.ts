@@ -1,12 +1,8 @@
-import {Request, Response, NextFunction} from "express";
-import * as admin from "firebase-admin";
+import { Request, Response, NextFunction } from "express";
+import { admin, auth, db } from "../config/firebase";
 
 export interface AuthenticatedRequest extends Request {
   user?: admin.auth.DecodedIdToken;
-}
-
-if (!admin.apps.length) {
-  admin.initializeApp();
 }
 
 export const checkAuth = async (
@@ -15,24 +11,21 @@ export const checkAuth = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ") ?
-    authHeader.split("Bearer ")[1] :
-    null;
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split("Bearer ")[1]
+    : null;
 
   if (!token) {
-    console.log("No token provided");
-    res.status(401).json({message: "Unauthorized: No token provided"});
-    return;
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    console.log("Decoded token:", decodedToken);
+    const decodedToken = await auth.verifyIdToken(token);
     req.user = decodedToken;
-    next();
+    return next();
   } catch (error) {
     console.error("Auth error:", error);
-    res.status(401).json({message: "Unauthorized: Invalid token"});
+    res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
 
@@ -44,40 +37,28 @@ export const checkRole = (role: "viewer" | "editor") => {
   ) => {
     const user = req.user;
     if (!user || !user.uid) {
-      return res.status(401).json({message: "Unauthorized: No user found"});
+      return res.status(401).json({ message: "Unauthorized: No user found" });
     }
 
     try {
-      const userDoc = await admin
-        .firestore()
-        .collection("users")
-        .doc(user.uid)
-        .get();
-
-      if (!userDoc.exists) {
-        return res
-          .status(403)
-          .json({message: "Forbidden: User record not found"});
-      }
-
-      const userData = userDoc.data();
-      const userRole = userData?.role;
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      const userRole = userDoc.data()?.role;
 
       if (!userRole) {
-        return res.status(403).json({message: "Forbidden: No role assigned"});
+        return res.status(403).json({ message: "Forbidden: No role assigned" });
       }
 
       if (role === "editor" && userRole !== "editor") {
         return res
           .status(403)
-          .json({message: "Forbidden: Editor role required"});
+          .json({ message: "Forbidden: Editor role required" });
       }
 
       next();
       return;
     } catch (error) {
       console.error("checkRole error:", error);
-      return res.status(500).json({message: "Internal server error"});
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 };
