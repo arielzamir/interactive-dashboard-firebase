@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "fir-project-d9b5e"
+    "default": "traffic-dashboard-firebase"
   },
   "targets": {},
   "etags": {}
