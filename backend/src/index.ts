@@ -9,7 +9,11 @@ const PORT = process.env.PORT || 8080;
 
 const app = express();
 
-app.use(cors({ origin: true }));
+app.use(
+  cors({
+    origin: "https://interactive-dashboard-firebase.vercel.app",
+  })
+);
 app.use(express.json());
 app.use("/api", trafficStatsApi);
 
