@@ -15,6 +15,7 @@ const Dashboard = () => {
   } = useTrafficData();
 
   const { user } = useAuth();
+  console.log("user in Dashboard:", user);
   const isEditor = user?.role === "editor";
 
   if (loading) return <div>Loading...</div>;
