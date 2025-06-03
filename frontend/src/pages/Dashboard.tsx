@@ -25,12 +25,14 @@ const Dashboard = () => {
         Traffic Dashboard
       </Typography>
 
-      <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
-        <Typography variant="h6" mb={2}>
-          Add New Entry
-        </Typography>
-        <AddEntryForm onAdd={addEntry} canEdit={isEditor} />
-      </Paper>
+      {isEditor && (
+        <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h6" mb={2}>
+            Add New Entry
+          </Typography>
+          <AddEntryForm onAdd={addEntry} canEdit={isEditor} />
+        </Paper>
+      )}
 
       {trafficStats.length === 0 ? (
         <Box textAlign="center" mt={8}>
