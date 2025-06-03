@@ -22,7 +22,7 @@ Frontend (Vercel):
 🔗 [https://interactive-dashboard-firebase.vercel.app](https://interactive-dashboard-firebase.vercel.app)
 
 Backend (Render):  
-🔗 https://<your-backend-url>.onrender.com/api/traffic
+🔗 https://interactive-dashboard-firebase.onrender.com/api
 
 ---
 
