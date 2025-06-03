@@ -15,7 +15,6 @@ const Dashboard = () => {
   } = useTrafficData();
 
   const { user } = useAuth();
-  console.log("user in Dashboard:", user);
   const isEditor = user?.role === "editor";
 
   if (loading) return <div>Loading...</div>;
@@ -26,14 +25,14 @@ const Dashboard = () => {
         Traffic Dashboard
       </Typography>
 
-      {isEditor ? (
+      {isEditor && (
         <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
           <Typography variant="h6" mb={2}>
             Add New Entry
           </Typography>
           <AddEntryForm onAdd={addEntry} canEdit={isEditor} />
         </Paper>
-      ) : null}
+      )}
 
       {trafficStats.length === 0 ? (
         <Box textAlign="center" mt={8}>

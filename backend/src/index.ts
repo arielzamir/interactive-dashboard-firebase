@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://interactive-dashboard-firebase.vercel.app",
+    origin: ["https://interactive-dashboard-firebase.vercel.app"],
     credentials: true,
   })
 );
