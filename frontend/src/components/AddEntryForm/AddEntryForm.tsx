@@ -25,7 +25,11 @@ const AddEntryForm = ({ onAdd, canEdit }: AddEntryFormProps) => {
       <TextField
         label="Date"
         type="date"
-        InputLabelProps={{ shrink: true }}
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+        }}
         value={date}
         onChange={(e) => setDate(e.target.value)}
         required

@@ -1,4 +1,16 @@
-import { db } from "../backend/src/config/firebase";
+import * as admin from "firebase-admin";
+import * as dotenv from "dotenv";
+dotenv.config();
+
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.FB_PROJECT_ID,
+    privateKey: process.env.FB_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    clientEmail: process.env.FB_CLIENT_EMAIL,
+  }),
+});
+
+const db = admin.firestore();
 
 const trafficStats = [
   { date: "2025-03-01", visits: 120 },

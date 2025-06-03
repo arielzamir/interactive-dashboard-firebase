@@ -1,27 +1,14 @@
 import { useMemo, useState } from "react";
-import { useTable, useSortBy, usePagination, Column, Row } from "react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Box,
-  Typography,
-} from "@mui/material";
+import DateFilter from "./DateFilter";
+import TrafficTableBody from "./TrafficTableBody";
+import { TrafficStat } from "../../interfaces/TrafficStat.interface";
+import { Column, Row, useTable } from "react-table";
+import { IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { TrafficStat } from "../../interfaces/TrafficStat.interface";
+import PaginationControls from "./PaginationControls";
 import { TableInstanceWithPagination } from "../types/react-table-helpers";
+import EditDialog from "./EditDialog";
 
 interface TrafficTableProps {
   trafficStats: TrafficStat[];
@@ -66,156 +53,72 @@ const TrafficTable = ({
         Cell: ({ row }: { row: Row<TrafficStat> }) =>
           canEdit ? (
             <>
-              <IconButton
-                onClick={() => {
-                  setEditingRow(row.original);
-                  setEditVisits(row.original.visits);
-                }}
-                color="primary"
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => onDelete(row.original.id)}
-                color="error"
-              >
-                <DeleteIcon />
-              </IconButton>
+              <Tooltip title="Edit">
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setEditingRow(row.original);
+                    setEditVisits(row.original.visits);
+                  }}
+                  color="primary"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton
+                  size="small"
+                  onClick={() => onDelete(row.original.id)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
             </>
           ) : null,
       },
     ],
-    [onDelete]
+    [onDelete, canEdit, setEditingRow, setEditVisits]
   );
 
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
     nextPage,
     previousPage,
     canNextPage,
     canPreviousPage,
     state: { pageIndex },
-  } = useTable(
-    {
-      columns,
-      data: filteredData,
-      initialState: {
-        pageIndex: 0,
-        pageSize: 5,
-      } as any,
-    },
-    useSortBy,
-    usePagination
-  ) as TableInstanceWithPagination<TrafficStat>;
-
-  const handleSave = async () => {
-    if (!editingRow) return;
-    await onUpdate(editingRow.id, { visits: editVisits });
-    setEditingRow(null);
-  };
+  } = useTable({
+    columns,
+    data: filteredData,
+    initialState: {
+      pageIndex: 0,
+      pageSize: 5,
+    } as any,
+  }) as TableInstanceWithPagination<TrafficStat>;
 
   return (
     <>
-      <Box mb={2} display="flex" gap={2}>
-        <TextField
-          label="Start Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <TextField
-          label="End Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-      </Box>
-
-      <TableContainer component={Paper}>
-        <Table {...getTableProps()}>
-          <TableHead>
-            {headerGroups.map((group) => (
-              <TableRow {...group.getHeaderGroupProps()} key={group.id}>
-                {group.headers.map((column) => (
-                  <TableCell
-                    {...column.getHeaderProps(
-                      // @ts-ignore
-                      column.getSortByToggleProps()
-                    )}
-                    key={column.id}
-                  >
-                    {column.render("Header")}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-
-          <TableBody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()} key={row.id}>
-                  {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()} key={cell.column.id}>
-                      {cell.render("Cell")}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mt={2}
-      >
-        <Button
-          variant="outlined"
-          onClick={previousPage}
-          disabled={!canPreviousPage}
-        >
-          Previous
-        </Button>
-        <Typography>Page {pageIndex + 1}</Typography>
-        <Button variant="outlined" onClick={nextPage} disabled={!canNextPage}>
-          Next
-        </Button>
-      </Box>
-
-      <Dialog open={!!editingRow} onClose={() => setEditingRow(null)}>
-        <DialogTitle>Edit Visits</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Visits"
-            type="number"
-            fullWidth
-            value={editVisits}
-            onChange={(e) => setEditVisits(Number(e.target.value))}
-            autoFocus
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditingRow(null)}>Cancel</Button>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            disabled={editingRow?.visits === editVisits}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DateFilter
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+      />
+      <TrafficTableBody columns={columns} data={filteredData} />
+      <PaginationControls
+        pageIndex={pageIndex}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+      />
+      <EditDialog
+        editingRow={editingRow}
+        setEditingRow={setEditingRow}
+        editVisits={editVisits}
+        setEditVisits={setEditVisits}
+        onUpdate={onUpdate}
+      />
     </>
   );
 };
