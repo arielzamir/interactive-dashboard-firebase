@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import DateFilter from "./DateFilter";
 import TrafficTableBody from "./TrafficTableBody";
 import { TrafficStat } from "../../interfaces/TrafficStat.interface";
-import { Column, Row, useTable } from "react-table";
+import { Column, Row, useTable, useSortBy, usePagination } from "react-table";
 import { IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -82,19 +82,28 @@ const TrafficTable = ({
   );
 
   const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
     nextPage,
     previousPage,
     canNextPage,
     canPreviousPage,
     state: { pageIndex },
-  } = useTable({
-    columns,
-    data: filteredData,
-    initialState: {
-      pageIndex: 0,
-      pageSize: 5,
-    } as any,
-  }) as TableInstanceWithPagination<TrafficStat>;
+  } = useTable(
+    {
+      columns,
+      data: filteredData,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+      } as any,
+    },
+    useSortBy,
+    usePagination
+  ) as TableInstanceWithPagination<TrafficStat>;
 
   return (
     <>
@@ -104,7 +113,13 @@ const TrafficTable = ({
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
       />
-      <TrafficTableBody columns={columns} data={filteredData} />
+      <TrafficTableBody
+        getTableProps={getTableProps}
+        getTableBodyProps={getTableBodyProps}
+        headerGroups={headerGroups}
+        prepareRow={prepareRow}
+        page={page}
+      />
       <PaginationControls
         pageIndex={pageIndex}
         canPreviousPage={canPreviousPage}

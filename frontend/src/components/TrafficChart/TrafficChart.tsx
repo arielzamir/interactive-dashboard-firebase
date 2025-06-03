@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { TrafficStat } from "../../interfaces/TrafficStat.interface";
 import { aggregateVisits, groupBy } from "../../utils/aggregateStats";
-import { ViewMode } from "../../types/view-mode";
+import { ViewMode } from "../types/view-mode";
 import { formatDate } from "../../utils/dateHelpers";
 
 const TrafficChart = ({ trafficStats }: { trafficStats: TrafficStat[] }) => {

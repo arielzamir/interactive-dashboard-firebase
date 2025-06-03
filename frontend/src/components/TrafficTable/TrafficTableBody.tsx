@@ -7,30 +7,24 @@ import {
   TableBody as MuiTableBody,
   Paper,
 } from "@mui/material";
-import { useTable, useSortBy, usePagination, Column } from "react-table";
+import { HeaderGroup, Row } from "react-table";
 import { TrafficStat } from "../../interfaces/TrafficStat.interface";
-import { TableInstanceWithPagination } from "../types/react-table-helpers";
 
 interface TrafficTableBodyProps {
-  columns: Column<TrafficStat>[];
-  data: TrafficStat[];
+  getTableProps: () => any;
+  getTableBodyProps: () => any;
+  headerGroups: HeaderGroup<TrafficStat>[];
+  prepareRow: (row: Row<TrafficStat>) => void;
+  page: Row<TrafficStat>[];
 }
 
-const TrafficTableBody = ({ columns, data }: TrafficTableBodyProps) => {
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
-    useTable(
-      {
-        columns,
-        data,
-        initialState: {
-          pageIndex: 0,
-          pageSize: 5,
-        } as any,
-      },
-      useSortBy,
-      usePagination
-    ) as TableInstanceWithPagination<TrafficStat>;
-
+const TrafficTableBody = ({
+  getTableProps,
+  getTableBodyProps,
+  headerGroups,
+  prepareRow,
+  page,
+}: TrafficTableBodyProps) => {
   return (
     <TableContainer component={Paper}>
       <Table {...getTableProps()}>
