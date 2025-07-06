@@ -39,6 +39,6 @@ app.get("/basicConnectionTest", (req, res) => {
   res.status(200).send({ message: "Connection succeeded!" });
 });
 
-app.use("/", trafficStatsApi);
+app.use("/", trafficStatsApi);  
 
 export const api = onRequest({ region: REGION }, app);

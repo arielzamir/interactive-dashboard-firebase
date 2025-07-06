@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as admin from "firebase-admin";
 import { auth, db } from "../firebase/admin";
+import { logger } from "firebase-functions/v2";
 
 export interface AuthenticatedRequest extends Request {
   user?: admin.auth.DecodedIdToken;
@@ -11,21 +12,32 @@ export const checkAuth = async (
   res: Response,
   next: NextFunction
 ) => {
+  logger.info("Checking authentication...");
   const authHeader = req.headers.authorization || "";
   const token = authHeader.startsWith("Bearer ")
     ? authHeader.split("Bearer ")[1]
     : null;
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+    logger.warn("No token provided in the request");
+    res.status(401).json({ message: "Unauthorized: No token provided" });
+    return;
   }
 
   try {
     const decodedToken = await auth.verifyIdToken(token);
     req.user = decodedToken;
-    return next();
+    logger.info({
+      message: "User authenticated successfully",
+      userId: req.user?.uid,
+    });
+    next();
+    return;
   } catch (error) {
-    console.error("Auth error:", error);
+    logger.error({
+      message: "Authentication failed",
+      error: error,
+    });
     res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
@@ -36,9 +48,12 @@ export const checkRole = (role: "viewer" | "editor") => {
     res: Response,
     next: NextFunction
   ) => {
+    logger.info(`Checking role: ${role}`);
     const user = req.user;
     if (!user || !user.uid) {
-      return res.status(401).json({ message: "Unauthorized: No user found" });
+      logger.warn("No user found in the request");
+      res.status(401).json({ message: "Unauthorized: No user found" });
+      return;
     }
 
     try {
@@ -46,20 +61,25 @@ export const checkRole = (role: "viewer" | "editor") => {
       const userRole = userDoc.data()?.role;
 
       if (!userRole) {
-        return res.status(403).json({ message: "Forbidden: No role assigned" });
+        logger.warn("User has no role assigned");
+        res.status(403).json({ message: "Forbidden: No role assigned" });
+        return;
       }
 
       if (role === "editor" && userRole !== "editor") {
-        return res
-          .status(403)
-          .json({ message: "Forbidden: Editor role required" });
+        logger.warn("User does not have editor role");
+        res.status(403).json({ message: "Forbidden: Editor role required" });
+        return;
       }
 
       next();
       return;
     } catch (error) {
-      console.error("checkRole error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      logger.error({
+        message: "Error checking user role",
+        error: error,
+      });
+      res.status(500).json({ message: "Internal server error" });
     }
   };
 };
