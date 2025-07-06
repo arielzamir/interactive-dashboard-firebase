@@ -1,12 +1,13 @@
-export interface UserAuth {
+export type UserAuth = {
   email: string;
   password: string;
-}
-export interface User {
+};
+
+export type User = {
   id: string;
   email: string;
   name: string;
   role: "admin" | "user";
   createdAt: Date;
   updatedAt: Date;
-}
+};

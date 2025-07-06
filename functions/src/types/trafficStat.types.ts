@@ -1,4 +1,4 @@
-export interface TrafficStat {
+export type TrafficStat = {
   date: string;
   visits: number;
-}
+};

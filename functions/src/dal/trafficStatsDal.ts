@@ -1,6 +1,6 @@
 import { UpdateData } from "firebase-admin/firestore";
 import { db } from "../firebase/admin";
-import { TrafficStat } from "../types/trafficStat.interface";
+import { TrafficStat } from "../types/trafficStat.types";
 
 const collection = db.collection("trafficStats");
 

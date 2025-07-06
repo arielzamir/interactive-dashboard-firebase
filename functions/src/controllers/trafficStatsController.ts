@@ -6,7 +6,6 @@ import {
   getAllStatsService,
   updateStatService,
 } from "../services/trafficStatsService";
-import { log } from "firebase-functions/logger";
 
 export const getAllStatsController = async (req: Request, res: Response) => {
   try {
