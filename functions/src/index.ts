@@ -24,7 +24,7 @@ if (missingEssentialEnvVariables.length > 0) {
 const app = express();
 
 const corsOptions = {
-  origin: true,
+  origin: ["http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
