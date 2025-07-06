@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import * as functions from "firebase-functions";
+import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { defineString } from "firebase-functions/params";
 import { trafficStatsApi } from "./routes/trafficStats";
@@ -41,4 +41,4 @@ app.get("/basicConnectionTest", (req, res) => {
 
 app.use("/", trafficStatsApi);
 
-export const api = functions.https.onRequest({ region: REGION }, app);
+export const api = onRequest({ region: REGION }, app);

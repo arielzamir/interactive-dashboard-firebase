@@ -3,11 +3,6 @@
     {
       "source": "functions",
       "codebase": "default",
-      "runtime": "node18",
-      "deployment": {
-        "regions": ["us-central1"],
-        "functionGeneration": "gen1"
-      },
       "ignore": [
         "node_modules",
         ".git",
